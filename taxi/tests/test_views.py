@@ -59,7 +59,7 @@ class TaxiTestCase(TestCase):
 
     def test_driver_create_view(self):
         url = reverse("taxi:driver-create")
-        response = self.client.post(url, {
+        self.client.post(url, {
             "username": "driver3",
             "password1": "testpass123",
             "password2": "testpass123",
@@ -79,27 +79,27 @@ class TaxiTestCase(TestCase):
 
         self.driver1.cars.clear()
 
-        response = self.client.get(url)
+        self.client.get(url)
         self.driver1.refresh_from_db()
         self.assertIn(self.car, self.driver1.cars.all())
 
-        response = self.client.get(url)
+        self.client.get(url)
         self.driver1.refresh_from_db()
         self.assertNotIn(self.car, self.driver1.cars.all())
 
     def test_search_in_manufacturer_list(self):
         url = reverse("taxi:manufacturer-list")
-        res = self.client.get(url + "?search_term=Audi")
+        res = self.client.get(url + "?search_term=Toyota")
 
-        manufacturers = Manufacturer.objects.filter(name__icontains="Audi")
+        manufacturers = Manufacturer.objects.filter(name__icontains="Toyota")
         self.assertEqual(list(res.context["manufacturer_list"]),
                          list(manufacturers))
 
     def test_search_in_car_list(self):
         url = reverse("taxi:car-list")
-        res = self.client.get(url + "?search_term=A4")
+        res = self.client.get(url + "?search_term=Camry")
 
-        cars = Car.objects.filter(model__icontains="A4")
+        cars = Car.objects.filter(model__icontains="Camry")
         self.assertEqual(list(res.context["car_list"]), list(cars))
 
     def test_search_in_driver_list(self):
